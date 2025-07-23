@@ -20,11 +20,14 @@ Just want to see it work? Run this:
 # 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Run a quick 5-minute test
+# 2. Run a quick 5-minute test (uses Mac M4 GPU automatically!)
 python train_agent.py --quick-test
 
-# 3. Test your trained agent
+# 3. Test your trained agent with GUI visualization
 python eval_agent.py --model best --render
+
+# 4. Or watch training in real-time (slower but cool!)
+python train_agent.py --short --gui
 ```
 
 ## 📋 Step-by-Step Guide

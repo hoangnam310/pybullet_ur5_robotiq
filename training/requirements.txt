@@ -1,0 +1,29 @@
+# Core reinforcement learning libraries
+stable-baselines3[extra]>=2.0.0
+tensorboard>=2.10.0
+
+# Gym and environment dependencies
+gymnasium>=0.26.0
+gym>=0.21.0
+
+# Scientific computing
+numpy>=1.21.0
+scipy>=1.7.0
+
+# Visualization and logging
+matplotlib>=3.5.0
+seaborn>=0.11.0
+wandb>=0.13.0
+
+# Utility libraries
+tqdm>=4.64.0
+pyyaml>=6.0
+
+# PyTorch with MPS support for Apple Silicon
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=0.15.0
+
+# Development and debugging
+ipython>=8.0.0
+jupyter>=1.0.0

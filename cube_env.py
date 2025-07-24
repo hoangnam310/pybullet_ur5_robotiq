@@ -33,6 +33,14 @@ class CubeManipulation:
             p.configureDebugVisualizer(p.COV_ENABLE_GUI, 1)
             p.configureDebugVisualizer(p.COV_ENABLE_SHADOWS, 0)  # Disable shadows for performance
             p.configureDebugVisualizer(p.COV_ENABLE_WIREFRAME, 0)
+            
+            p.resetDebugVisualizerCamera(
+                cameraDistance=1.5,
+                cameraYaw=30,
+                cameraPitch=-30,
+                cameraTargetPosition=[0, 0, 0.1]
+            )
+            
         else:
             self.physicsClient = p.connect(p.DIRECT)
             
@@ -54,7 +62,7 @@ class CubeManipulation:
         self.rollId = p.addUserDebugParameter("roll", -3.14, 3.14, 0)
         self.pitchId = p.addUserDebugParameter("pitch", -3.14, 3.14, np.pi/2)
         self.yawId = p.addUserDebugParameter("yaw", -np.pi/2, np.pi/2, np.pi/2)
-        self.gripper_opening_length_control = p.addUserDebugParameter("gripper_opening_length", 0, 0.085, 0.04)
+        self.gripper_opening_length_control = p.addUserDebugParameter("gripper_opening_length", 0, 0.085, 0.085)
 
         # Load the smaller cube instead of the screw box
         self.cubeID = p.loadURDF("./urdf/objects/small_cube.urdf",
@@ -63,6 +71,7 @@ class CubeManipulation:
                                 useFixedBase=False)  # Allow the cube to move freely
 
         # Target position for the cube (goal)
+        # Cube height is 0.04m, so center should be at 0.02m to rest on ground
         self.target_position = np.array([0.0, -0.1, 0.01125])  # Target location for the cube
         
         # Task completion tracking
@@ -171,7 +180,7 @@ class CubeManipulation:
 
     def reset_cube(self):
         """Reset cube to initial position"""
-        initial_pos = [0.1, 0.1, 0.01125]  # Updated for smaller cube height
+        initial_pos = [0.1, 0.1, 0.01125]  # Cube center at 2cm (half of 4cm cube height)
         initial_orientation = p.getQuaternionFromEuler([0, 0, 0])
         p.resetBasePositionAndOrientation(self.cubeID, initial_pos, initial_orientation)
         

@@ -18,7 +18,7 @@ class FailToReachTargetError(RuntimeError):
 
 class CubeManipulation:
 
-    SIMULATION_STEP_DELAY = 1 / 1000.  # Further reduced for better stability
+    SIMULATION_STEP_DELAY = 1 / 2000.  # Reduced delay for faster GUI simulation
 
     def __init__(self, robot, models: Models, camera=None, vis=False) -> None:
         self.robot = robot
@@ -29,10 +29,15 @@ class CubeManipulation:
         # define environment with better stability settings
         if self.vis:
             self.physicsClient = p.connect(p.GUI)
-            # Configure GUI for better stability on macOS
+            # Configure GUI for better performance on macOS
             p.configureDebugVisualizer(p.COV_ENABLE_GUI, 1)
             p.configureDebugVisualizer(p.COV_ENABLE_SHADOWS, 0)  # Disable shadows for performance
             p.configureDebugVisualizer(p.COV_ENABLE_WIREFRAME, 0)
+            p.configureDebugVisualizer(p.COV_ENABLE_RENDERING, 1)  # Enable rendering
+            p.configureDebugVisualizer(p.COV_ENABLE_TINY_RENDERER, 0)  # Disable tiny renderer
+            p.configureDebugVisualizer(p.COV_ENABLE_RGB_BUFFER_PREVIEW, 0)  # Disable RGB preview
+            p.configureDebugVisualizer(p.COV_ENABLE_DEPTH_BUFFER_PREVIEW, 0)  # Disable depth preview
+            p.configureDebugVisualizer(p.COV_ENABLE_SEGMENTATION_MARK_PREVIEW, 0)  # Disable segmentation
             
             p.resetDebugVisualizerCamera(
                 cameraDistance=1.5,
@@ -122,7 +127,9 @@ class CubeManipulation:
         assert control_method in ('joint', 'end')
         self.robot.move_ee(action[:-1], control_method)
         self.robot.move_gripper(action[-1])
-        for _ in range(20):  # Reduced from 120 to 20 for faster response
+        # Reduce simulation steps for faster performance (was 20, now 10)
+        sim_steps = 5 if not self.vis else 10  # Fewer steps in headless mode
+        for _ in range(sim_steps):
             self.step_simulation()
 
         reward = self.update_reward()

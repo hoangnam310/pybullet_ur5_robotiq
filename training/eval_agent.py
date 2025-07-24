@@ -11,6 +11,7 @@ Usage:
     python eval_agent.py --model MODEL_PATH      # Test specific model
     python eval_agent.py --episodes 10           # Test with 10 episodes
     python eval_agent.py --render                # Show visualization
+    python eval_agent.py --model "training/models/best_cube_manipulation_agent_short_20250724_122113/best_model.zip" --render --episodes 5
 """
 
 import argparse

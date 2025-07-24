@@ -63,7 +63,7 @@ class TrainingConfig:
     # Visualization settings
     ENABLE_GUI_EVAL = True        # Show GUI during evaluation
     RECORD_VIDEO = False          # Record training videos (experimental)
-    RENDER_TRAINING = False       # Show GUI during training (much slower!)
+    RENDER_TRAINING = False      # Show GUI during training (much slower!)
     
     # File paths
     MODEL_DIR = "training/models"

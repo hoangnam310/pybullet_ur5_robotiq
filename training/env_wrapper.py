@@ -5,9 +5,9 @@ This wrapper makes our cube environment compatible with reinforcement learning l
 like Stable-Baselines3, OpenAI Gym, etc.
 """
 
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 import sys
 import os
 
@@ -30,15 +30,24 @@ class CubeManipulationEnv(gym.Env):
     def __init__(self, render_mode=None):
         super(CubeManipulationEnv, self).__init__()
         
-        # Initialize the underlying environment
-        self.robot = UR5Robotiq85((0, 0.5, 0), (0, 0, 0))
-        self.models = Models()
+        # Save current directory and change to parent directory for URDF loading
+        self.original_cwd = os.getcwd()
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        os.chdir(parent_dir)
         
-        # Use headless mode for training (much faster)
-        self.render_mode = render_mode
-        vis_mode = (render_mode == 'human')
-        
-        self.env = CubeManipulation(self.robot, self.models, vis=vis_mode)
+        try:
+            # Initialize the underlying environment
+            self.robot = UR5Robotiq85((0, 0.5, 0), (0, 0, 0))
+            self.models = Models()
+            
+            # Use headless mode for training (much faster)
+            self.render_mode = render_mode
+            vis_mode = (render_mode == 'human')
+            
+            self.env = CubeManipulation(self.robot, self.models, vis=vis_mode)
+        finally:
+            # Restore original directory
+            os.chdir(self.original_cwd)
         
         # Define action space: [x, y, z, roll, pitch, yaw, gripper_opening]
         # All values are normalized between -1 and 1
@@ -186,12 +195,21 @@ class CubeManipulationEnvSimple(gym.Env):
     def __init__(self, render_mode=None):
         super(CubeManipulationEnvSimple, self).__init__()
         
-        # Initialize the underlying environment
-        self.robot = UR5Robotiq85((0, 0.5, 0), (0, 0, 0))
-        self.models = Models()
+        # Save current directory and change to parent directory for URDF loading
+        self.original_cwd = os.getcwd()
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        os.chdir(parent_dir)
         
-        vis_mode = (render_mode == 'human')
-        self.env = CubeManipulation(self.robot, self.models, vis=vis_mode)
+        try:
+            # Initialize the underlying environment
+            self.robot = UR5Robotiq85((0, 0.5, 0), (0, 0, 0))
+            self.models = Models()
+            
+            vis_mode = (render_mode == 'human')
+            self.env = CubeManipulation(self.robot, self.models, vis=vis_mode)
+        finally:
+            # Restore original directory
+            os.chdir(self.original_cwd)
         
         # Simplified action space: just [x, y, gripper] - focus on 2D movement
         self.action_space = spaces.Box(
@@ -273,8 +291,8 @@ class CubeManipulationEnvSimple(gym.Env):
         return gym_obs.astype(np.float32)
 
 
-# Register environments with gym
-from gym.envs.registration import register
+# Register environments with gymnasium
+from gymnasium.envs.registration import register
 
 register(
     id='CubeManipulation-v0',
